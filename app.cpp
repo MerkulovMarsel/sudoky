@@ -1,37 +1,20 @@
 #include <sudoku/sudoku.hpp>
-
-
-class SudokuApp {
-public:
-  SudokuApp() = default;
-  void Initialaze(int argc, char** argv);
-
-
-  void Update_App();
-
-
-
-
-
-private:
-  
-};
-
-class SudokuObject {
-public:
-  SudokuObject();
-
-
-
-
-private:
-  const SudokuApp* m_app;
-};
-
+#include <iostream>
 
 
 
 
 int main(int argc, char** argv ) {
-
+  Sudoku game;
+  game.Initialaze(9, 3);
+  int x = 0;
+  int y = 0;
+  int value = 0;
+  while (!game.Is_Game_Over()) {
+    game.Out();
+    std::cin >> x >> y >> value;
+    Coord pos(x, y);
+    game.Move(pos, value);
+  }
+  std::cout << "GG" << std::endl;
 }
