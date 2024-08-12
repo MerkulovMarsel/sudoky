@@ -1,11 +1,35 @@
 #include "sudoku.hpp"
 
-void Sudoku::Initialaze(const int size, std::int8_t value) {
+void Mask::Simply_Init() {
+  for (auto it = mask.begin(); it != mask.end(); ++it) {
+    *it = true;
+  }
+}
 
+bool Mask::operator[](const Coord& pos) {
+  return mask[pos.Get_Index()];
+}
+
+void Value::Simply_Init() {
+  int v = 0;
+  for (auto it = value.begin(); it != value.end(); ++it) {
+    *it = (v++ + v/9)%9 + 1;
+  }
+}
+
+std::int8_t Value::operator[](const Coord& pos) {
+  return value[pos.Get_Index()];
+}
+
+void Sudoku::Initialaze(const int key = 0, std::int8_t available_mistakes = 3) {
+  Mask mask(key);
+  Value value(key);
+  fieald_.Generate_Field(mask,value);
+  availiable_mistakes_ = available_mistakes;
 }
 
 
-std::vector<Ceil> Sudoku::Out() const {
+std::array<Ceil,81> Sudoku::Out() const {
 
 }
 
@@ -15,37 +39,29 @@ void Sudoku::Move(const Coord& pos, const int value) {
 
 
 bool Sudoku::Is_Game_Over() {
-
+  return (availiable_mistakes_ == 0);
 }
 
 
 
+void Field::Generate_Field(const Mask& mask, const Value& value) {
+  for (Coord i(0,0); i < Coord(0,9); ++i) {
+    data_[i.Get_Index()] = (value[i], mask[i]);
+  }
+}
 
-
-void Field::Generate_Field() {
+Field::ProxyCeil& Field::operator[] (const Coord& pos) {
 
 }
 
 
-Ceil Field::Take_ceil(const int x, const int y) const {
+Field::ProxyCeil& Field::operator[] (const Coord& pos) {
 
 }
-
-
-void Field::Set_Ceil(const int x, const int y, std::int8_t value) {
-
-}
-
 
 
 bool Field::Is_Visible(const Coord& pos) {
-
+  return data_[pos.Get_Index()].Is_Visible();
 }
 
 
-
-
-
-void Ceil::Set_Ceil(const std::int8_t value, const bool visible) {
-
-}

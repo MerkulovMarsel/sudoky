@@ -6,7 +6,7 @@
 
 int main(int argc, char** argv ) {
   Sudoku game;
-  game.Initialaze(9, 3);
+  game.Initialaze(0, 3);
   int x = 0;
   int y = 0;
   int value = 0;
