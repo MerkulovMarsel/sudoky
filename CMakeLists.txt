@@ -19,6 +19,8 @@ add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-16>")
 add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-16>")
 
 add_subdirectory(sudoku)
+add_subdirectory(app.test)
+
 
 add_executable(app app.cpp)
 target_link_libraries(app sudoku)

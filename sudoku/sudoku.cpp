@@ -1,4 +1,5 @@
-#include "sudoku.hpp"
+#include <sudoku/sudoku.hpp>
+#include <array>
 
 void Mask::Simply_Init() {
   for (auto it = mask.begin(); it != mask.end(); ++it) {
@@ -6,9 +7,13 @@ void Mask::Simply_Init() {
   }
 }
 
+
+
 bool Mask::operator[](const Coord& pos) const {
   return mask[pos.Get_Index()];
 }
+
+
 
 void Value::Simply_Init() {
   int v = 0;
@@ -17,9 +22,13 @@ void Value::Simply_Init() {
   }
 }
 
+
+
 std::int8_t Value::operator[](const Coord& pos) const {
   return value[pos.Get_Index()];
 }
+
+
 
 void Sudoku::Initialaze(const int key = 0, std::int8_t available_mistakes = 3) {
   Mask mask(key);
@@ -27,6 +36,7 @@ void Sudoku::Initialaze(const int key = 0, std::int8_t available_mistakes = 3) {
   fieald_.Generate_Field(mask,value);
   availiable_mistakes_ = available_mistakes;
 }
+
 
 
 void Sudoku::Out() const {
@@ -38,13 +48,15 @@ void Sudoku::Out() const {
   }
 }
 
+
+
 void Sudoku::Move(const Coord& pos, const std::int8_t value) {
   if (fieald_[pos].Is_Visible()) {
     std::cout << "\nValue of this ceils is availiable\n";
   }
   else {
     if (fieald_[pos].Get_Value() == value) {
-
+      fieald_[pos].Make_Visible();
     }
     else {
       --availiable_mistakes_;
@@ -52,6 +64,8 @@ void Sudoku::Move(const Coord& pos, const std::int8_t value) {
     }
   }
 }
+
+
 
 
 bool Sudoku::Is_Game_Over() {
@@ -66,10 +80,14 @@ void Field::Generate_Field(const Mask& mask, const Value& value) {
   }
 }
 
+
 Field::ProxyCeil& Field::operator[] (const Coord& pos) {
   ProxyCeil temp(*this, pos);
   return temp;
 }
+
+
+
 
 Field::ProxyCeil& Field::operator[] (const Coord& pos) const {
   Field tmp = *this;
@@ -77,13 +95,19 @@ Field::ProxyCeil& Field::operator[] (const Coord& pos) const {
   return temp;
 }
 
+
+
+
 Field::ProxyCeil& Field::ProxyCeil::operator=(const Ceil& ceil) {
   field_.data_[pos_.Get_Index()] = ceil;
   ceil_ = ceil;
   return *this;
 }
 
-bool Field::Is_Visible(const Coord& pos) {
+
+
+
+bool Field::Is_Visible(const Coord pos) {
   return data_[pos.Get_Index()].Is_Visible();
 }
 
