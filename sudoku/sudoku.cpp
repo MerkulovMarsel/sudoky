@@ -2,8 +2,12 @@
 #include <array>
 
 void Mask::Simply_Init() {
+  int m = 78;
   for (auto it = mask.begin(); it != mask.end(); ++it) {
-    *it = true;
+    if (m == 0) {
+      *it = false;
+    }else{*it = true;}
+    --m;
   }
 }
 
@@ -24,25 +28,39 @@ void Value::Simply_Init() {
 
 
 
-std::int8_t Value::operator[](const Coord& pos) const {
+short int Value::operator[](const Coord& pos) const {
   return value[pos.Get_Index()];
 }
 
 
 
-void Sudoku::Initialaze(const int key = 0, std::int8_t available_mistakes = 3) {
+void Sudoku::Initialaze(const int key, short int availiable_mistakes) {
   Mask mask(key);
   Value value(key);
   fieald_.Generate_Field(mask,value);
-  availiable_mistakes_ = available_mistakes;
+  availiable_mistakes_ = availiable_mistakes;
 }
 
 
 
 void Sudoku::Out() const {
-  for (int i = 0; i < 9; ++i) {
-    for (int j = 0; j < 9; ++j) {
-      std::cout << "[ " << fieald_[Coord(j, i)].Get_Value() << " ]  ";
+  for (int i = -1; i < 9; ++i) {
+    for (int j = -1; j < 9; ++j) {
+      if (i < 0 or j < 0) {
+        if (i >= 0) {
+          std::cout << "  " << i << "   ";
+        }
+        else if (j >= 0) {
+          std::cout << "  " << j << "   ";
+        }
+        else {
+          std::cout << "      ";
+        }
+      }
+      else {
+        Coord pos(j, i);
+        fieald_[pos].Out_Ceil();
+      }
     }
     std::cout << "\n";
   }
@@ -50,7 +68,7 @@ void Sudoku::Out() const {
 
 
 
-void Sudoku::Move(const Coord& pos, const std::int8_t value) {
+void Sudoku::Move(const Coord& pos, const short int value) {
   if (fieald_[pos].Is_Visible()) {
     std::cout << "\nValue of this ceils is availiable\n";
   }
@@ -60,7 +78,7 @@ void Sudoku::Move(const Coord& pos, const std::int8_t value) {
     }
     else {
       --availiable_mistakes_;
-      std::cout << "\nWrong value!\n";
+      std::cout << "\nWrong value!" << value << fieald_[pos].Get_Value() <<"\n";;
     }
   }
 }
@@ -68,7 +86,7 @@ void Sudoku::Move(const Coord& pos, const std::int8_t value) {
 
 
 
-bool Sudoku::Is_Game_Over() {
+bool Sudoku::Is_Game_Over() const {
   return (availiable_mistakes_ == 0);
 }
 
@@ -112,3 +130,16 @@ bool Field::Is_Visible(const Coord pos) {
 }
 
 
+void Ceil::Set_Ceil(const short int value, const bool visible) {
+  value_ = value;
+  visible_ = visible;
+}
+
+void Ceil::Out_Ceil() const {
+  if (visible_) {
+    std::cout << "[ " << static_cast<int>(value_) << " ] ";
+  }
+  else {
+    std::cout << "[ " << "?" << " ] ";
+  }
+}
