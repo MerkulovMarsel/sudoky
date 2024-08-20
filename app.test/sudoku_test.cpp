@@ -2,6 +2,7 @@
 #include "doctest.h"
 #include <sudoku/sudoku.hpp>
 
+using namespace Sudoku;
 
 TEST_CASE("Ceil ctor") {
   Ceil ceil;
@@ -22,23 +23,37 @@ TEST_CASE("Coord ceil") {
   CHECK_EQ(pos.Get_Index(), 0);
   try {
     Coord pos2(100, 1000);
+    std::cout << "NO OK";
   }
   catch (std::runtime_error) {}
   try {
     Coord pos2(-1000, 1);
+    std::cout << "NO OK";
   }
   catch (std::runtime_error) {}
 }
 
 
-TEST_CASE("out ctor") {
-  short int  a = 6;
-  int b = 6;
-  CHECK_EQ(a, b);
+TEST_CASE("Mask ctor") {
+  Mask m;
 }
-TEST_CASE("sudoku ctor") {
-  Sudoku sudoku;
-  CHECK_EQ(sudoku.Get_Size(), 9);
+
+TEST_CASE("Field issue") {
+  Field f;
+  Coord c(0, 0);
+  CHECK_EQ(f[c].Get_Value(), f.Get_Value(c));
+  Ceil a(4, true);
+  f[c] = a;
+  CHECK_EQ(f[c].Get_Value(), f.Get_Value(c));
+  int b = f[c].Get_Value();
+  int d = f.Get_Value(c);
+  CHECK_EQ(b,d);
+}
+
+
+TEST_CASE("game ctor") {
+  Game game;
+  CHECK_EQ(game.Get_Size(), 9);
 }
 
 

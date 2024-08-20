@@ -1,4 +1,4 @@
-add_library(sudoku sudoku.hpp sudoku.cpp)
+add_library(sudoku sudoku.hpp ceil.cpp mask_value.cpp fielald.cpp game.cpp)
 
 set_property(TARGET sudoku PROPERTY CXX_STANDARD 20)
 
