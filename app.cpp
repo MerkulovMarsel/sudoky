@@ -6,7 +6,7 @@ using namespace Sudoku;
 
 int main(int argc, int** argv ) {
   Game game;
-  game.Initialaze(0, 3);
+  game.Initialaze(1, 3);
   int x = 0;
   int y = 0;
   int value = 0;

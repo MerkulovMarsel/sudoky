@@ -35,5 +35,5 @@ Sudoku::Field::ProxyCeil& Sudoku::Field::ProxyCeil::operator=(const Ceil& ceil) 
 
 
 bool Sudoku::Field::Is_Visible(const Coord pos) {
-  return data_[pos.Get_Index()].Is_Visible();
+  return data_[pos.Get_Index()].Get_Visible();
 }

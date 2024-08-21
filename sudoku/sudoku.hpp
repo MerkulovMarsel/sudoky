@@ -7,40 +7,44 @@
 #include <bitset>
 
 
-
-
+/// \brief namespace of game library that contains all classes for sudoku
 namespace Sudoku {
+  /// \brief class of basic ceil in game
   class Ceil
   {
   public:
+    /// \brief default ctor of int value and visible of ceil
+    Ceil(int value = 0, bool visible = true) : value_{ value }, visible_{ visible } {};
 
-    inline Ceil() { value_ = 0; visible_ = true; };
+    /// \brief set content of ceil
+    /// \param value: value in ceil
+    /// \param visible: visible of ceil in game
+    void Set_Ceil(const int value = 0, const bool visible = true) noexcept;
 
-    Ceil(int value, bool vis) : value_(value), visible_(vis) {};
+    /// \brief Make ceil visible
+    inline void Make_Visible() noexcept { visible_ = true; }
 
-    void Set_Ceil(const int value, const bool visible);
+    /// \return return visible of ceil
+    [[nodiscard]] inline bool Get_Visible() const noexcept { return visible_; }
 
-    inline void Make_Visible() { visible_ = true; };
+    /// \return return value of ceil
+    [[nodiscard]] inline int Get_Value() const noexcept { return value_; };
 
-    inline bool Is_Visible() const { return visible_; }
-
-    inline int Get_Value() const { return value_; };
-
+    /// \brief print ceil 
     void Out_Ceil() const;
 
-    //Ceil& operator=(const Field::ProxyCeil& ceil) { value_ = ceil.Get_Value(); visible_ = ceil.Is_Visible(); }
+    /// \brief operator== for class ceil
+    [[nodiscard]] bool operator==(const Ceil& ceil) const noexcept { return (value_ == ceil.Get_Value()) && (visible_ == ceil.Get_Visible()); }
 
-    bool operator==(const Ceil& ceil) { return (value_ == ceil.Get_Value()) && (visible_ == ceil.Is_Visible()); }
+    /// \brief operator== for class int value
+    [[nodiscard]] bool operator==(const int value) const noexcept { return value_ == value; }
   private:
-    int value_ = 1;
+    int value_ = 0;
     bool visible_ = true;
   };
 
   class Coord {
   public:
-
-    inline void operator++() { ++index_; };
-
     inline Coord() = default;
 
     inline Coord(const int x, const int y) {
@@ -52,18 +56,33 @@ namespace Sudoku {
       }
     }
 
-    inline int Get_Row() const { return index_ % size_; };
+    inline void operator++() noexcept { ++index_; };
 
-    inline int Get_Column() const { return index_ / size_; };
+    [[nodiscard]] inline bool operator<(const Coord& pos) const noexcept { return index_ < pos.Get_Index(); };
 
-    inline int Get_Index() const { return index_; };
+    [[nodiscard]] inline bool operator>(const Coord& pos) const noexcept { return index_ > pos.Get_Index(); };
 
-    inline bool operator<(const Coord& pos) { return index_ < pos.Get_Index(); };
+    [[nodiscard]] inline bool operator<=(const Coord& pos) const noexcept { return index_ <= pos.Get_Index(); };
 
-    inline bool operator==(const Coord& pos) const { return index_ == pos.Get_Index(); }
+    [[nodiscard]] inline bool operator>=(const Coord& pos) const noexcept { return index_ >= pos.Get_Index(); };
 
-    inline bool operator==(const int pos) const { return index_ == pos; }
+    [[nodiscard]] inline bool operator<(const int pos) const noexcept { return index_ < pos; };
 
+    [[nodiscard]] inline bool operator>(const int pos) const noexcept { return index_ > pos; };
+
+    [[nodiscard]] inline bool operator<=(const int pos) const noexcept { return index_ <= pos; };
+
+    [[nodiscard]] inline bool operator>=(const int pos) const noexcept { return index_ >= pos; };
+
+    [[nodiscard]] inline bool operator==(const Coord& pos) const noexcept { return index_ == pos.Get_Index(); }
+
+    [[nodiscard]] inline bool operator==(const int pos) const noexcept { return index_ == pos; }
+
+    [[nodiscard]] inline int Get_Row() const noexcept { return index_ % size_; };
+
+    [[nodiscard]] inline int Get_Column() const noexcept { return index_ / size_; };
+
+    [[nodiscard]] inline int Get_Index() const noexcept { return index_; };
   private:
     int index_ = 0;
     static const int size_ = 9;
@@ -71,8 +90,13 @@ namespace Sudoku {
 
   class Seed {
   public:
+
     Seed(unsigned int seed = 0);
-    inline bool operator[](const int pos) { return seed_[pos]; }
+
+    [[nodiscard]] inline bool operator[](const int pos) const { return seed_[pos]; }
+
+    inline Seed& operator=(unsigned int seed) { Seed i(seed); *this = i; return *this; }
+
   private:
     std::bitset<24> seed_;
   };
@@ -85,24 +109,25 @@ namespace Sudoku {
 
     inline Value(const Seed& seed = 0): seed_(seed){}
 
-    int Init(const Coord& pos) const;
+    [[nodiscard]] int Init(const Coord& pos) const noexcept;
 
-    inline int operator()(const Coord& pos) const { return Init(pos); }
+    [[nodiscard]] inline int operator()(const Coord& pos) const noexcept { return Init(pos); }
 
-    int Base_Construct(const Coord& pos) const;
+    [[nodiscard]] int Base_Construct(const Coord& pos) const noexcept;
+
   private:
     Seed seed_;
+    static const int size_ = 3;
   };
 
 class Mask {
   public:
-    inline Mask() : diff_{ 0 }, hiden_ceils_{ 1 }, seed_{ 0 } {}
 
-    Mask(const int diff, const Seed& seed);
+    Mask(const int diff = 0, const Seed& seed = 0);
 
-    bool Init(const Coord& pos) const;
+    [[nodiscard]] bool Init(const Coord& pos) const noexcept;
 
-    inline bool operator()(const Coord& pos) const { return Init(pos); }
+    [[nodiscard]] inline bool operator()(const Coord& pos) const noexcept { return Init(pos); }
 
   private:
     int diff_ = 0;
@@ -119,7 +144,7 @@ class Mask {
 
       ProxyCeil& operator=(const Ceil& ceil);
 
-      inline bool Is_Visible() const { return ceil_.Is_Visible(); }
+      inline bool Is_Visible() const { return ceil_.Get_Visible(); }
 
       inline int Get_Value() const { return ceil_.Get_Value(); }
 

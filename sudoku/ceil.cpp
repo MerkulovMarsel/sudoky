@@ -1,6 +1,6 @@
 #include <sudoku/sudoku.hpp> 
 
-void Sudoku::Ceil::Set_Ceil(const int value, const bool visible) {
+void Sudoku::Ceil::Set_Ceil(const int value, const bool visible) noexcept {
   value_ = value;
   visible_ = visible;
 }
