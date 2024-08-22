@@ -7,10 +7,10 @@ using namespace Sudoku;
 TEST_CASE("Ceil ctor") {
   Ceil ceil;
   CHECK_EQ(ceil.Get_Value(), 0);
-  CHECK_EQ(ceil.Is_Visible(), true);
+  CHECK_EQ(ceil.Get_Visible(), true);
   Ceil ceil1(2, false);
   CHECK_EQ(ceil1.Get_Value(), 2);
-  CHECK_EQ(ceil1.Is_Visible(), false);
+  CHECK_EQ(ceil1.Get_Visible(), false);
 }
 
 TEST_CASE("Coord ceil") {

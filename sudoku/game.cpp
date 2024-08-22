@@ -3,14 +3,15 @@
 
 
 
-void Sudoku::Game::Initialaze(const int b_seed, int availiable_mistakes) {
+void Sudoku::Game::Initialaze(const int b_seed,const int availiable_mistakes, const int diff) {
   Seed seed(b_seed);
-  Mask mask(0,seed);
+  Mask mask(diff,seed);
   Value value(seed);
   availiable_mistakes_ = availiable_mistakes;
-  while (!Is_Reacheable()) {
+  hiden_ceils_ = mask.Get_Hiden_Ceils();
+  do {
     fieald_.Generate_Field(mask, value);
-  }
+  } while (!Is_Reacheable());
 }
 
 
@@ -75,8 +76,12 @@ void Sudoku::Game::Move(const Coord& pos, const int value) {
 
 
 
-bool Sudoku::Game::Is_Game_Over() const {
-  return (availiable_mistakes_ == 0 || hiden_ceils_ == 0);
+bool Sudoku::Game::Is_Game_Over() const noexcept {
+  if (availiable_mistakes_ <= 0 || hiden_ceils_ <= 0) {
+    std::cout << "\nGG" << std::endl;
+    return true;
+  }
+  return false;
 }
 
 

@@ -2,20 +2,18 @@
 #include <iostream>
 
 
-using namespace Sudoku;
-
 int main(int argc, int** argv ) {
-  Game game;
-  game.Initialaze(1, 3);
+  int seed = 80;
+  int availiable_mistakes = 1;
+  int diff = 0;
+  Sudoku::Game game{seed,availiable_mistakes,diff};
   int x = 0;
   int y = 0;
   int value = 0;
-  while (!game.Is_Game_Over()) {
+  while (!game) {
     game.Out();
     std::cin >> value;
     std::cin >> x >> y;
-    Coord pos(x, y);
-    game.Move(pos,value);
+    game.Move(x, y, value);
   }
-  std::cout << "GG" << std::endl;
 }

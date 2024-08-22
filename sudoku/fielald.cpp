@@ -30,10 +30,3 @@ Sudoku::Field::ProxyCeil& Sudoku::Field::ProxyCeil::operator=(const Ceil& ceil) 
   ceil_ = ceil;
   return *this;
 }
-
-
-
-
-bool Sudoku::Field::Is_Visible(const Coord pos) {
-  return data_[pos.Get_Index()].Get_Visible();
-}

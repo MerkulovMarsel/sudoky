@@ -48,11 +48,11 @@ namespace Sudoku {
     inline Coord() = default;
 
     inline Coord(const int x, const int y) {
-      if (x < 0 || x > size_ || y < 0 || y> size_) {
+      if (x < 0 || x > size_ * size_ || y < 0 || y > size_ * size_) {
         throw std::runtime_error("Invalid argument");
       }
       else {
-        index_ = x + size_ * y;
+        index_ = x + size_ * size_ * y;
       }
     }
 
@@ -78,20 +78,26 @@ namespace Sudoku {
 
     [[nodiscard]] inline bool operator==(const int pos) const noexcept { return index_ == pos; }
 
-    [[nodiscard]] inline int Get_Row() const noexcept { return index_ % size_; };
+    [[nodiscard]] inline bool operator!=(const int pos) const noexcept { return index_ != pos; }
 
-    [[nodiscard]] inline int Get_Column() const noexcept { return index_ / size_; };
+    [[nodiscard]] inline int Get_Row() const noexcept { return index_ / (size_ * size_); };
+
+    [[nodiscard]] inline int Get_Column() const noexcept { return index_ % (size_ * size_); };
 
     [[nodiscard]] inline int Get_Index() const noexcept { return index_; };
+
+    [[nodiscard]] inline int Get_Segment() const noexcept { return (Get_Row() / size_) * size_ + Get_Column() / size_; };
   private:
     int index_ = 0;
-    static const int size_ = 9;
+    static const int size_ = 3;
   };
 
   class Seed {
   public:
 
     Seed(unsigned int seed = 0);
+
+    inline Seed(const Seed& seed) : seed_{ seed.seed_ } {};
 
     [[nodiscard]] inline bool operator[](const int pos) const { return seed_[pos]; }
 
@@ -129,6 +135,8 @@ class Mask {
 
     [[nodiscard]] inline bool operator()(const Coord& pos) const noexcept { return Init(pos); }
 
+    [[nodiscard]] inline int Get_Hiden_Ceils() const noexcept { return hiden_ceils_; }
+
   private:
     int diff_ = 0;
     int hiden_ceils_ = 0;
@@ -144,19 +152,19 @@ class Mask {
 
       ProxyCeil& operator=(const Ceil& ceil);
 
-      inline bool Is_Visible() const { return ceil_.Get_Visible(); }
+      [[nodiscard]] inline bool Is_Visible() const noexcept { return ceil_.Get_Visible(); }
 
-      inline int Get_Value() const { return ceil_.Get_Value(); }
+      [[nodiscard]] inline int Get_Value() const noexcept { return ceil_.Get_Value(); }
 
       inline void Make_Visible() { field_.data_[pos_.Get_Index()].Make_Visible(); }
 
       inline void Out_Ceil() { ceil_.Out_Ceil(); }
 
-      inline bool operator==(const int val) {
+      [[nodiscard]] inline bool operator==(const int val) {
         return ceil_.Get_Value() == val;
       }
 
-      inline bool operator==(const Ceil& ceil) {
+      [[nodiscard]] inline bool operator==(const Ceil& ceil) {
         return ceil == ceil_;
       }
 
@@ -166,7 +174,7 @@ class Mask {
       Ceil ceil_{ 1,false };
     };
 
-    inline Field() { Mask m; Value v; Generate_Field(m, v); }
+    inline Field() = default;
 
     inline Field(const Mask& mask, const Value& value) { Generate_Field(mask, value); }
 
@@ -174,15 +182,15 @@ class Mask {
 
     void Generate_Field(const Mask& mask, const Value& value);
 
-    bool Is_Visible(const Coord pos); 
+    [[nodiscard]] inline bool Get_Visible(const Coord& pos) const { return data_[pos.Get_Index()].Get_Visible(); }
 
     ProxyCeil operator[] (const Coord& pos);
 
     ProxyCeil operator[] (const Coord& pos) const;
 
-    inline int Get_Value(const Coord& pos) const { return data_[pos.Get_Index()].Get_Value(); }
+    [[nodiscard]] inline int Get_Value(const Coord& pos) const { return data_[pos.Get_Index()].Get_Value(); }
 
-    inline Ceil Get_Ceil(const Coord& pos) const { return data_[pos.Get_Index()]; }
+    [[nodiscard]] inline Ceil Get_Ceil(const Coord& pos) const { return data_[pos.Get_Index()]; }
   private:
     std::array<Ceil, 81> data_;
     static const int size_ = 9;
@@ -191,15 +199,17 @@ class Mask {
 
   class Game {
   public:
-    inline Game() = default;
+    inline Game(const int seed = 0, int availiable_mistakes = 0, const int diff = 0) { Initialaze(seed, availiable_mistakes, diff); }
 
-    void Initialaze(const int seed = 0, int availiable_mistakes = 3);
+    void Initialaze(const int seed = 0, int availiable_mistakes = 0, const int diff = 0);
 
     void Out() const;
 
     void Move(const Coord& pos, const int value);
 
-    bool Is_Game_Over() const;
+    void Move(const int x, const int y, const int value) { Move(Coord(x, y), value); }
+
+    bool Is_Game_Over() const noexcept;
 
     static inline int Get_Size() { return size_; };
 
@@ -207,10 +217,12 @@ class Mask {
 
     bool Is_Reacheable() const { return true; }
 
+    [[nodiscard]] inline operator bool() const noexcept  { return Is_Game_Over(); }
+
   private:
     Field fieald_;
-    int availiable_mistakes_ = 3;
-    int hiden_ceils_ = 1;
+    int availiable_mistakes_ = 0;
+    int hiden_ceils_ = 0;
     static const int size_ = 9;
   };
 }
