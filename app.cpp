@@ -3,9 +3,19 @@
 
 
 int main(int argc, int** argv ) {
-  int seed = 80;
+  int seed = 0;
   int availiable_mistakes = 1;
   int diff = 0;
+  std::cout << "Input seed: ";
+  std::cin >> seed;
+  std::cout << "Input difficult: ";
+  std::cin >> diff;
+  if (diff == 0) {
+    availiable_mistakes = 1;
+  }
+  else {
+    availiable_mistakes = 3;
+  }
   Sudoku::Game game{seed,availiable_mistakes,diff};
   int x = 0;
   int y = 0;

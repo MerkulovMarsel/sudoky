@@ -17,7 +17,36 @@ int Sudoku::Value::Base_Construct(const Coord& pos) const noexcept {
 }
 
 
-int Sudoku::Value::Init(const Coord& pos) const noexcept {
+int Sudoku::Value::Init(Coord pos) const noexcept {
+  //Segment row
+  for (Changer i; i.End(); i.Next()) {
+    if (seed_.Seqment_Row_Switch(i.x, i.y)) {
+      std::cout << " sr ";
+      pos.Segment_Row_Change(i.x, i.y);
+    }
+  }
+  //Segment column
+  for (Changer i; i.End(); i.Next()) {
+    if (seed_.Seqment_Column_Switch(i.x, i.y)) {
+      std::cout << " sc ";
+      pos.Segment_Column_Change(i.x, i.y);
+    }
+  }
+  //Row in Segment
+  for (Changer i; i.End(); i.Next()) {
+    if (seed_.Row_Change_in_Segment(pos.Get_Segment(), i.x, i.y)) {
+      std::cout << " r ";
+      pos.Row_Change((pos.Get_Segment() / size_) + i.x, (pos.Get_Segment() / size_) + i.y);
+    }
+  }
+  //Column in Segment
+  for (Changer i; i.End(); i.Next()) {
+    if (seed_.Column_Change_in_Segment(pos.Get_Segment(), i.x, i.y)) {
+      std::cout << " c ";
+      pos.Column_Change((pos.Get_Segment() % size_) + i.x, (pos.Get_Segment() % size_) + i.y);
+    }
+  }
+
   return Base_Construct(pos);
 }
 
@@ -42,10 +71,7 @@ bool Sudoku::Mask::Init(const Coord& pos) const noexcept {
         n += (1 << i);
       }
     }
-    if ((n < 81) && (n > 0) ) {
-      return pos != n;
-    }
-    return pos != 0;
+    return pos != (n % 81);
   }
   else {
     return false;

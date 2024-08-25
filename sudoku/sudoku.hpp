@@ -87,6 +87,60 @@ namespace Sudoku {
     [[nodiscard]] inline int Get_Index() const noexcept { return index_; };
 
     [[nodiscard]] inline int Get_Segment() const noexcept { return (Get_Row() / size_) * size_ + Get_Column() / size_; };
+
+    [[nodiscard]] inline int Get_Segment_Row() const noexcept { return Get_Segment() / size_; }
+
+    [[nodiscard]] inline int Get_Segment_Column() const noexcept { return  Get_Segment() % size_; }
+
+    inline void Change_To(const int x, const int y) {
+      Coord tmp(x, y);
+      index_ = tmp.Get_Index();
+    }
+
+    inline void Change_To(const Coord& pos) {
+      index_ = pos.Get_Index();
+    }
+
+    inline void Row_Change(const int row1, const int row2) { 
+      if (row1 >= row2) {
+        throw std::invalid_argument("wrong row change: first argument must be less than second");
+      }
+      else {
+        if (Get_Row() == row1) {
+          Change_To(Get_Column(), row2);
+        }
+        else if (Get_Row() == row2) {
+          Change_To(Get_Column(), row1);
+        }
+      }
+    }
+
+    inline void Column_Change(const int col1, const int col2) {
+      if (col1 >= col2) {
+        throw std::invalid_argument("wrong column change: first argument must be less than second");
+      }
+      else {
+        if (Get_Row() == col1) {
+          Change_To(col2, Get_Row());
+        }
+        else if (Get_Row() == col2) {
+          Change_To(col1, Get_Row());
+        }
+      }
+    }
+
+    inline void Segment_Row_Change(const int row1, const int row2) {
+      for (int i = 0; i < size_; ++i) {
+        Row_Change(row1 * size_ + i, row2 * size_ + i);
+      }
+    }
+
+    inline void Segment_Column_Change(const int col1, const int col2) {
+      for (int i = 0; i < size_; ++i) {
+        Column_Change(col1 * size_ + i, col2 * size_ + i);
+      }
+    }
+
   private:
     int index_ = 0;
     static const int size_ = 3;
@@ -103,8 +157,17 @@ namespace Sudoku {
 
     inline Seed& operator=(unsigned int seed) { Seed i(seed); *this = i; return *this; }
 
+    inline bool Seqment_Row_Switch(const int row1, const int row2) const { return seed_[row1 + row2 - 1]; }
+
+    inline bool Seqment_Column_Switch(const int row1, const int row2) const { return seed_[row1 + row2 + size_ - 1]; }
+
+    inline bool Row_Change_in_Segment(const int segment, const int row1, const int row2) const { return seed_[size_ * 2 + (segment / size_) * size_ + (row1 % size_) + (row2 % size_) - 1]; }
+
+    inline bool Column_Change_in_Segment(const int segment, const int col1, const int col2) const { return seed_[size_ * 5 + (segment % size_) * size_  + (col1 % size_) + (col2 % size_) - 1]; }
+
   private:
     std::bitset<24> seed_;
+    static const int size_ = 3;
   };
 
 
@@ -115,13 +178,26 @@ namespace Sudoku {
 
     inline Value(const Seed& seed = 0): seed_(seed){}
 
-    [[nodiscard]] int Init(const Coord& pos) const noexcept;
+    [[nodiscard]] int Init(Coord pos) const noexcept;
 
     [[nodiscard]] inline int operator()(const Coord& pos) const noexcept { return Init(pos); }
 
     [[nodiscard]] int Base_Construct(const Coord& pos) const noexcept;
 
   private:
+    struct Changer {
+      Changer() = default;
+      bool End() { return !((x >= (size_ - 2)) && (y >= (size_ - 1))); }
+      void Next() {
+        if (y - x == 1) {
+          ++y;
+        }else{
+          ++x;
+        }
+      }
+      int x = 0;
+      int y = 1;
+    };
     Seed seed_;
     static const int size_ = 3;
   };
