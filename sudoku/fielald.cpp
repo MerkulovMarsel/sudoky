@@ -30,3 +30,33 @@ Sudoku::Field::ProxyCeil& Sudoku::Field::ProxyCeil::operator=(const Ceil& ceil) 
   ceil_ = ceil;
   return *this;
 }
+
+
+void Sudoku::Field::Good_Field() const {
+  bool bad_field = false;
+  for (Coord pos; pos < size_ * size_; ++pos) {
+    for (Coord i{ 0,pos.Get_Row() }; i < Coord(8, pos.Get_Row()); ++i) {
+      if ((i != pos) && (data_[pos.Get_Index()] == data_[i.Get_Index()].Get_Value())) {
+        bad_field = true;
+        break;
+      }
+    }
+    for (Coord i{pos.Get_Column(), 0 }; i < Coord( pos.Get_Column(), 8); i += 9) {
+      if ((i != pos) && (data_[pos.Get_Index()] == data_[i.Get_Index()].Get_Value())) {
+        bad_field = true;
+        break;
+      }
+    }
+    for (int j = 0; j < 3; ++j) {
+      for (Coord i{ (pos.Get_Segment() % 3) * 3 , j + (pos.Get_Segment() / 3) * 3 }; i < Coord((pos.Get_Segment() % 3) * 3 + 3, j + (pos.Get_Segment() / 3) * 3); ++i) {
+        if ((i != pos) && (data_[pos.Get_Index()] == data_[i.Get_Index()].Get_Value())) {
+          bad_field = true;
+          break;
+        }
+      }
+    }
+  }
+  if (bad_field) {
+    throw std::runtime_error("bad field");
+  }
+}

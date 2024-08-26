@@ -8,8 +8,8 @@ int main(int argc, int** argv ) {
   int diff = 0;
   std::cout << "Input seed: ";
   std::cin >> seed;
-  std::cout << "Input difficult: ";
-  std::cin >> diff;
+  //std::cout << "Input difficult: ";
+  //std::cin >> diff;
   if (diff == 0) {
     availiable_mistakes = 1;
   }

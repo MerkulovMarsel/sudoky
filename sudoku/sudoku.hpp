@@ -58,6 +58,8 @@ namespace Sudoku {
 
     inline void operator++() noexcept { ++index_; };
 
+    inline void operator+=(const int n) noexcept { index_+=n; };
+
     [[nodiscard]] inline bool operator<(const Coord& pos) const noexcept { return index_ < pos.Get_Index(); };
 
     [[nodiscard]] inline bool operator>(const Coord& pos) const noexcept { return index_ > pos.Get_Index(); };
@@ -120,10 +122,10 @@ namespace Sudoku {
         throw std::invalid_argument("wrong column change: first argument must be less than second");
       }
       else {
-        if (Get_Row() == col1) {
+        if (Get_Column() == col1) {
           Change_To(col2, Get_Row());
         }
-        else if (Get_Row() == col2) {
+        else if (Get_Column() == col2) {
           Change_To(col1, Get_Row());
         }
       }
@@ -267,6 +269,8 @@ class Mask {
     [[nodiscard]] inline int Get_Value(const Coord& pos) const { return data_[pos.Get_Index()].Get_Value(); }
 
     [[nodiscard]] inline Ceil Get_Ceil(const Coord& pos) const { return data_[pos.Get_Index()]; }
+
+    void Good_Field() const;
   private:
     std::array<Ceil, 81> data_;
     static const int size_ = 9;

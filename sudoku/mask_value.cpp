@@ -6,6 +6,9 @@ Sudoku::Seed::Seed(unsigned int seed) {
   for (int i = 0; i < 24; ++i) {
     seed_[i] = (seed % 2);
     seed /= 2;
+    if (seed == 2) {
+      --seed;
+    }
   }
   
 }
@@ -35,14 +38,14 @@ int Sudoku::Value::Init(Coord pos) const noexcept {
   //Row in Segment
   for (Changer i; i.End(); i.Next()) {
     if (seed_.Row_Change_in_Segment(pos.Get_Segment(), i.x, i.y)) {
-      std::cout << " r ";
+      //std::cout << " r ";
       pos.Row_Change((pos.Get_Segment() / size_) + i.x, (pos.Get_Segment() / size_) + i.y);
     }
   }
   //Column in Segment
   for (Changer i; i.End(); i.Next()) {
     if (seed_.Column_Change_in_Segment(pos.Get_Segment(), i.x, i.y)) {
-      std::cout << " c ";
+      //std::cout << " c ";
       pos.Column_Change((pos.Get_Segment() % size_) + i.x, (pos.Get_Segment() % size_) + i.y);
     }
   }
