@@ -5,7 +5,7 @@
 #include <iostream>
 #include <array>
 #include <bitset>
-
+#include <string>
 
 /// \brief namespace of game library that contains all classes for sudoku
 namespace Sudoku {
@@ -153,6 +153,9 @@ namespace Sudoku {
 
     Seed(unsigned int seed = 0);
 
+    Seed(std::string seed = "");
+
+
     inline Seed(const Seed& seed) : seed_{ seed.seed_ } {};
 
     [[nodiscard]] inline bool operator[](const int pos) const { return seed_[pos]; }
@@ -163,9 +166,11 @@ namespace Sudoku {
 
     inline bool Seqment_Column_Switch(const int row1, const int row2) const { return seed_[row1 + row2 + size_ - 1]; }
 
-    inline bool Row_Change_in_Segment(const int segment, const int row1, const int row2) const { return seed_[size_ * 2 + (segment / size_) * size_ + (row1 % size_) + (row2 % size_) - 1]; }
+    inline bool Row_Change_in_Segment(const int segment, const int row1, const int row2) const {
+      return seed_[size_ * 2 + (segment / size_) * size_ + (row1 % size_) + (row2 % size_) - 1]; }
 
-    inline bool Column_Change_in_Segment(const int segment, const int col1, const int col2) const { return seed_[size_ * 5 + (segment % size_) * size_  + (col1 % size_) + (col2 % size_) - 1]; }
+    inline bool Column_Change_in_Segment(const int segment, const int col1, const int col2) const {
+      return seed_[size_ * 5 + (segment % size_) * size_  + (col1 % size_) + (col2 % size_) - 1]; }
 
   private:
     std::bitset<24> seed_;
@@ -189,7 +194,7 @@ namespace Sudoku {
   private:
     struct Changer {
       Changer() = default;
-      bool End() { return !((x >= (size_ - 2)) && (y >= (size_ - 1))); }
+      bool End() { return (x != size_ - 2)||(y != size_); }
       void Next() {
         if (y - x == 1) {
           ++y;
@@ -281,7 +286,11 @@ class Mask {
   public:
     inline Game(const int seed = 0, int availiable_mistakes = 0, const int diff = 0) { Initialaze(seed, availiable_mistakes, diff); }
 
+    inline Game(const std::string& seed = "", int availiable_mistakes = 0, const int diff = 0) { Initialaze(seed, availiable_mistakes, diff); }
+
     void Initialaze(const int seed = 0, int availiable_mistakes = 0, const int diff = 0);
+
+    void Initialaze(const std::string& seed = 0, int availiable_mistakes = 0, const int diff = 0);
 
     void Out() const;
 

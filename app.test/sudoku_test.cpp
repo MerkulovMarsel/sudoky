@@ -18,8 +18,8 @@ TEST_CASE("Coord ceil") {
   CHECK_EQ(pos.Get_Column(), 0);
   CHECK_EQ(pos.Get_Row(), 0);
   Coord pos1(3, 6);
-  CHECK_EQ(pos1.Get_Column(), 6);
-  CHECK_EQ(pos1.Get_Row(), 3);
+  CHECK_EQ(pos1.Get_Column(), 3);
+  CHECK_EQ(pos1.Get_Row(), 6);
   CHECK_EQ(pos.Get_Index(), 0);
   try {
     Coord pos2(100, 1000);
@@ -35,7 +35,9 @@ TEST_CASE("Coord ceil") {
 
 
 TEST_CASE("Mask ctor") {
-  Mask m;
+  for (int seed = 0; seed < (1 << 15); ++seed) {
+    Game g(seed, 1, 0);
+  }
 }
 
 TEST_CASE("Field issue") {

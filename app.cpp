@@ -1,13 +1,14 @@
 #include <sudoku/sudoku.hpp>
 #include <iostream>
-
+#include <string>
 
 int main(int argc, int** argv ) {
-  int seed = 0;
+  //int seed = (1 << 23) - 1;
+  std::string seed = "00000000000000001000000";
   int availiable_mistakes = 1;
   int diff = 0;
-  std::cout << "Input seed: ";
-  std::cin >> seed;
+  //std::cout << "Input seed: ";
+  //std::cin >> seed;
   //std::cout << "Input difficult: ";
   //std::cin >> diff;
   if (diff == 0) {

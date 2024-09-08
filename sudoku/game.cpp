@@ -11,10 +11,21 @@ void Sudoku::Game::Initialaze(const int b_seed,const int availiable_mistakes, co
   hiden_ceils_ = mask.Get_Hiden_Ceils();
   do {
     fieald_.Generate_Field(mask, value);
+    fieald_.Good_Field();
   } while (!Is_Reacheable());
 }
 
-
+void Sudoku::Game::Initialaze(const std::string& b_seed, const int availiable_mistakes, const int diff) {
+  Seed seed(b_seed);
+  Mask mask(diff, seed);
+  Value value(seed);
+  availiable_mistakes_ = availiable_mistakes;
+  hiden_ceils_ = mask.Get_Hiden_Ceils();
+  do {
+    fieald_.Generate_Field(mask, value);
+    //fieald_.Good_Field();
+  } while (!Is_Reacheable());
+}
 
 void Sudoku::Game::Out() const {
   for (int i = -1; i < 9; ++i) {

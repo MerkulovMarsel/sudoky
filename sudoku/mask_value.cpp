@@ -3,7 +3,7 @@
 //Seed
 
 Sudoku::Seed::Seed(unsigned int seed) {
-  for (int i = 0; i < 24; ++i) {
+  for (int i = 0; (i < 24) && (seed != 0); ++i) {
     seed_[i] = (seed % 2);
     seed /= 2;
     if (seed == 2) {
@@ -13,6 +13,12 @@ Sudoku::Seed::Seed(unsigned int seed) {
   
 }
 
+Sudoku::Seed::Seed(std::string seed) {
+  int y = 0;
+  for (auto i : seed) {
+    seed_[y++] = (i == '1') ? 1 : 0;
+  }
+}
 
 //Valuevc
 int Sudoku::Value::Base_Construct(const Coord& pos) const noexcept {
@@ -24,14 +30,14 @@ int Sudoku::Value::Init(Coord pos) const noexcept {
   //Segment row
   for (Changer i; i.End(); i.Next()) {
     if (seed_.Seqment_Row_Switch(i.x, i.y)) {
-      std::cout << " sr ";
+      //std::cout << " sr ";
       pos.Segment_Row_Change(i.x, i.y);
     }
   }
   //Segment column
   for (Changer i; i.End(); i.Next()) {
     if (seed_.Seqment_Column_Switch(i.x, i.y)) {
-      std::cout << " sc ";
+      //std::cout << " sc ";
       pos.Segment_Column_Change(i.x, i.y);
     }
   }
